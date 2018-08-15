@@ -20,6 +20,7 @@ debug: hello64 hello64.elf gdbinit
 OBJ16 := $(addprefix src16-real/, $(OBJ16))
 
 src16-real/boot.S: src16-real/print_asm_bios.S src16-real/print_asm_vga.S
+src16-real/boot.S: src16-real/al_to_str.S
 
 hello64.elf: $(OBJ16) ${EXTRA_OBJECT}
 	$(LD) -Ttext 0x7C00 -o $@ $^

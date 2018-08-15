@@ -27,6 +27,7 @@ str_asm_vga:
 
 #include "print_asm_bios.S"
 #include "print_asm_vga.S"
+#include "al_to_str.S"
 
   .space 510-(.-_start), 0 // Pad with 0s to 510 bytes
   .word 0xAA55 // Boot sector's magic number
