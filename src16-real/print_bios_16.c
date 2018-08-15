@@ -1,4 +1,4 @@
-__attribute__((fastcall)) void print_C_bios(char *str)
+__attribute__((fastcall)) void print_bios_16(char *str)
 {
   short ax;
   while (*str)

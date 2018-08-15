@@ -6,6 +6,7 @@ SECTIONS
   . = 0x7C00;
 
   .text : SUBALIGN(0) {
+    *(.text.bootloader);
     *(.text*)
   }
 
