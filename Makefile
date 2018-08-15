@@ -1,7 +1,8 @@
 OBJCOPY?=objcopy
 ASFLAGS+=-g3
+CFLAGS+=-g3
 
-OBJ16 := boot.o
+OBJ16 := boot.o print_C_bios.o
 
 ##########
 
@@ -19,11 +20,14 @@ debug: hello64 hello64.elf gdbinit
 
 OBJ16 := $(addprefix src16-real/, $(OBJ16))
 
-src16-real/boot.S: src16-real/print_asm_bios.S src16-real/print_asm_vga.S
-src16-real/boot.S: src16-real/al_to_str.S src16-real/keyboard_interrupt.S
+src16-real/%.o: ASFLAGS+=-m16
+src16-real/%.o: CFLAGS+=-m16
+
+LDFLAGS+=-m elf_i386
+LDFLAGS+=-T hello64.ld
 
 hello64.elf: $(OBJ16) ${EXTRA_OBJECT}
-	$(LD) -Ttext 0x7C00 -o $@ $^
+	$(LD) $(LDFLAGS) -o $@ $^
 
 hello64: hello64.elf
 	$(OBJCOPY) -O binary $^ $@
@@ -33,3 +37,12 @@ check: test/test.o
 
 clean:
 	$(RM) hello64 hello64.bin hello64.elf $(OBJ16) test/test.o
+
+dump: hello64
+	hexdump hello64
+
+open_elf: hello64.elf
+	objdump -d -Maddr16,data16,$M hello64.elf
+
+open_bin: hello64
+	objdump -D -b binary -m i386 -Maddr16,data16,$M hello64
