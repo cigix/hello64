@@ -24,6 +24,13 @@ print_al_bios:
   call  print_asm_bios
   ret
 
+  .global print_al_vga
+print_al_vga:
+  call  al_to_str
+  mov   $al_str_buf, %si
+  call  print_asm_vga
+  ret
+
 al_str_buf:
   .asciz  "00"
 
