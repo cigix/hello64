@@ -14,6 +14,9 @@ _start:
   mov   $text, %cx
   calll print_bios_16
 
+  mov   $test_string, %cx
+  calll print_bios_16
+
   cli
   lgdt  gdtr
   mov   %cr0, %eax
