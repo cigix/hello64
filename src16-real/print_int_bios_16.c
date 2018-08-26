@@ -1,3 +1,5 @@
+#include "print_16.h"
+
 const char *hexstr = "0123456789ABCDEF";
 
 __attribute__((fastcall)) void print_int_bios_16(long toprint, char size)
@@ -12,13 +14,11 @@ __attribute__((fastcall)) void print_int_bios_16(long toprint, char size)
     pos = 0xF & (toprint >> (size * 8 + 4));
     c = hexstr[pos];
     ax = 0x0E00 | c;
-    asm ("mov %0, %%ax" : : "r" (ax) : "%ax");
-    asm ("int $0x10");
+    asm ("int $0x10" : : "a" (ax));
 
     pos = 0xF & (toprint >> (size * 8));
     c = hexstr[pos];
     ax = 0x0E00 | c;
-    asm ("mov %0, %%ax" : : "r" (ax) : "%ax");
-    asm ("int $0x10");
+    asm ("int $0x10" : : "a" (ax));
   }
 }

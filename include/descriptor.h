@@ -8,8 +8,8 @@
 #define LIMIT_ADDR(addr) \
   ((addr & 0x0FFFFL) | ((addr & 0xF0000L) << (48 - 16)))
 
-#define ACCESS(byte) ((byte & 0xFE | 0x80L) << 40)
-#define FLAGS(flags) ((flags & 0xDL) << 52)
+#define ACCESS(byte) ((byte & 0xFE | 0x80LL) << 40)
+#define FLAGS(flags) ((flags & 0xDLL) << 52)
 
 // Access:
 // |      0      |       1       |          2           |

@@ -5,7 +5,9 @@ SECTIONS
 {
   /* All sections from data.elf are dumped here. */
   .disk 0x7E00 : {
+    data_start = .;
     data.elf
+    data_end = .;
   }
   /* From now on wildcards will not match data.elf. */
 

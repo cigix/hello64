@@ -1,10 +1,10 @@
 OBJCOPY?=objcopy
 ASFLAGS+=-g3
 CFLAGS+=-g3
-CFLAGS+=-fno-pic
+CFLAGS+=-fno-pic -fpack-struct
 
 # Files to be put on the first sector of the floppy device
-OBJ16_floppy := boot_to_protected gdt enable_line_20 print_bios_16
+OBJ16_floppy := boot gdt to_protected
 OBJ32_floppy := reload_segments print_vga_32
 # Other objects
 OBJ16 :=
