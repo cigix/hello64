@@ -9,9 +9,9 @@ _start:
   mov   %ax, %ss // Setup Stack Segment
   mov   $0x9C00, %sp // Setup Stack Pointer
 
-  call  load_next_sector
+  call  enable_line_20
 
-  lgdt  gdtr
+  call  load_next_sector
 
   mov   $text, %cx
   calll print_bios_16

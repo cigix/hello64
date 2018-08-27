@@ -4,10 +4,10 @@ CFLAGS+=-g3
 CFLAGS+=-fno-pic -fpack-struct
 
 # Files to be put on the first sector of the floppy device
-OBJ16_floppy := boot load_next_sector print_bios_16
+OBJ16_floppy := boot load_next_sector enable_line_20
 OBJ32_floppy :=
 # Other objects
-OBJ16 := simple_gdt to_protected
+OBJ16 := simple_gdt to_protected print_bios_16
 OBJ32 := reload_segments print_vga_32
 
 ##########

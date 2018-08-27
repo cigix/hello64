@@ -3,6 +3,14 @@
   .section .text
   .global to_protected
 to_protected:
+  // Notify the BIOS that we are going into long mode. We are not yet, but we
+  // will likely be there next time we need the BIOS.
+  mov   $0xEC00, %ax
+  mov   $2, %bl
+  int   $0x15
+
+  lgdt  gdtr
+
   cli
   mov   %cr0, %eax
   or    $0x1, %al
