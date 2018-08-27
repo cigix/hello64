@@ -9,8 +9,15 @@ _start:
   mov   %ax, %ss // Setup Stack Segment
   mov   $0x9C00, %sp // Setup Stack Pointer
 
-  calll find_extra_data
+  call  load_next_sector
 
   lgdt  gdtr
 
+  mov   $text, %cx
+  calll print_bios_16
+
   jmp   to_protected
+
+  .section .rodata
+text:
+  .asciz "Hello world! (from 16 bits C, BIOS)\r\n\n"

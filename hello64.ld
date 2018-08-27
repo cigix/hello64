@@ -3,14 +3,6 @@ ENTRY(_start);
 
 SECTIONS
 {
-  /* All sections from data.elf are dumped here. */
-  .disk 0x7E00 : {
-    data_start = .;
-    data.elf
-    data_end = .;
-  }
-  /* From now on wildcards will not match data.elf. */
-
   /* Code taken from the default GNU ld 2.31.1 linker script. */
   /* DWARF debug sections.
      Symbols in the DWARF debugging sections are relative to the beginning
@@ -45,6 +37,20 @@ SECTIONS
   .debug_addr     0 : { *(.debug_addr) }
   /* End of taken code. */
 
+  /DISCARD/ : {
+    *(.eh_frame);
+    *(.comment);
+    *(.note*);
+  }
+
+  /* All remaining sections from data.elf are dumped here. */
+  .disk 0x7E00 : {
+    data_start = .;
+    data.elf
+    data_end = .;
+  }
+  /* From now on wildcards will not match data.elf. */
+
   . = 0x7C00;
 
   .text : {
@@ -63,11 +69,5 @@ SECTIONS
   .sig : AT(0x7DFE)
   {
     SHORT(0xAA55)
-  }
-
-  /DISCARD/ : {
-    *(.eh_frame);
-    *(.comment);
-    *(.note*);
   }
 }
