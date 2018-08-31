@@ -1,6 +1,6 @@
 #include "descriptor.h"
   .code16
-  .section .text.bootloader
+  .section .text.stage0_start
   .global _start
 _start:
   xor   %ax, %ax
@@ -11,7 +11,7 @@ _start:
 
   call  enable_line_20
 
-  call  load_next_sector
+  call  load_stage1
 
   mov   $text, %cx
   calll print_bios_16

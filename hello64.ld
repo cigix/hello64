@@ -43,31 +43,34 @@ SECTIONS
     *(.note*);
   }
 
-  /* All remaining sections from data.elf are dumped here. */
-  .disk 0x7E00 : {
-    data_start = .;
-    data.elf
-    data_end = .;
-  }
-  /* From now on wildcards will not match data.elf. */
-
-  . = 0x7C00;
-
-  .text : {
-    *(.text.bootloader)
-    *(.text*)
+  .text.stage0 0x7C00 : SUBALIGN(0) {
+    stage0.elf(.text.stage0_start)
+    stage0.elf(.text*)
   }
 
-  .rodata : {
-    *(.rodata*)
+  .data.stage0 : SUBALIGN(0) {
+    stage0.elf(.rodata* .data*)
   }
 
-  .data : {
-    *(.data*)
-  }
-
-  .sig : AT(0x7DFE)
+  .sig 0x7DFE :
   {
     SHORT(0xAA55)
+  }
+
+  .text.stage1 0x7E00 : SUBALIGN(0) {
+    stage1_start = .;
+    stage1.elf(.text*)
+  }
+
+  .data.stage1 : SUBALIGN(0) {
+    stage1.elf(.rodata* .data*)
+    . = ALIGN(0x200);
+    stage1_end = .;
+  }
+
+  .stage2 : SUBALIGN(0) {
+    stage2_start = .;
+    *(*)
+    stage2_end = .;
   }
 }

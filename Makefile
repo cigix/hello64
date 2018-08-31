@@ -4,11 +4,17 @@ CFLAGS+=-g3
 CFLAGS+=-fno-pic -fpack-struct
 
 # Files to be put on the first sector of the floppy device
-OBJ16_floppy := boot load_next_sector enable_line_20
-OBJ32_floppy :=
-# Other objects
-OBJ16 := simple_gdt to_protected print_bios_16
-OBJ32 := reload_segments print_vga_32
+stage0_16 := boot load_stage1 enable_line_20
+stage0_32 :=
+stage0_64 :=
+# Files to be put on the remaining sectors of the floppy device and loaded after
+stage1_16 := simple_gdt to_protected print_bios_16
+stage1_32 := reload_segments print_vga_32
+stage1_64 :=
+
+fold_name_16 := src16-real
+fold_name_32 := src32-protected
+fold_name_64 := src64-long
 
 ##########
 
@@ -23,26 +29,29 @@ debug: hello64 hello64.elf gdbinit
 	sleep 1 ; gdb hello64.elf -x gdbinit ; \
 	kill $$! &>/dev/null || true
 
-OBJ_floppy := $(addprefix src16-real/, $(addsuffix .o, $(OBJ16_floppy)))
-OBJ_floppy += $(addprefix src32-protected/, $(addsuffix .o, $(OBJ32_floppy)))
-OBJ16 := $(addprefix src16-real/, $(addsuffix .o, $(OBJ16)))
-OBJ32 := $(addprefix src32-protected/, $(addsuffix .o, $(OBJ32)))
+stage0_OBJ := $(addprefix $(fold_name_16)/, $(addsuffix .o, $(stage0_16)))
+stage0_OBJ += $(addprefix $(fold_name_32)/, $(addsuffix .o, $(stage0_32)))
+stage0_OBJ += $(addprefix $(fold_name_64)/, $(addsuffix .o, $(stage0_64)))
+
+stage1_OBJ := $(addprefix $(fold_name_16)/, $(addsuffix .o, $(stage1_16)))
+stage1_OBJ += $(addprefix $(fold_name_32)/, $(addsuffix .o, $(stage1_32)))
+stage1_OBJ += $(addprefix $(fold_name_64)/, $(addsuffix .o, $(stage1_64)))
 
 CPPFLAGS+=-I include
-src16-real/%.o: ASFLAGS+=-m16 -O0
-src16-real/%.o: CFLAGS+=-m16 -Os
-src32-protected/%.o: ASFLAGS+=-m32 -O0
-src32-protected/%.o: CFLAGS+=-m32 -Os
+$(fold_name_16)/%.o: ASFLAGS+=-m16 -O0
+$(fold_name_16)/%.o: CFLAGS+=-m16 -Os
+$(fold_name_32)/%.o: ASFLAGS+=-m32 -O0
+$(fold_name_32)/%.o: CFLAGS+=-m32 -Os
 
 LDFLAGS+=-m elf_i386
 
-floppy.elf: $(OBJ_floppy)
+stage0.elf: $(stage0_OBJ)
 	$(LD) $(LDFLAGS) -r -o $@ $^
 
-data.elf: $(OBJ16) $(OBJ32) ${EXTRA_OBJECT}
+stage1.elf: $(stage1_OBJ) ${EXTRA_OBJECT}
 	$(LD) $(LDFLAGS) -r -o $@ $^
 
-hello64.elf: floppy.elf data.elf
+hello64.elf: stage0.elf stage1.elf
 	$(LD) $(LDFLAGS) -T hello64.ld -o $@ $^
 
 %.bin: %.elf
@@ -56,8 +65,8 @@ check: test/test.o
 
 clean:
 	$(RM) hello64 hello64.bin hello64.elf
-	$(RM) floppy.bin data.bin floppy.elf data.elf
-	$(RM) $(OBJ_floppy) $(OBJ16) $(OBJ32)
+	$(RM) stage0.bin stage1.bin stage0.elf stage1.elf
+	$(RM) $(stage0_OBJ) $(stage1_OBJ)
 	$(RM) test/test.o
 
 dump: hello64
