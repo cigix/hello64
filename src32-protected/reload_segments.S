@@ -11,12 +11,11 @@ reload_segments:
   mov   %ax, %gs // Setup Extra extra extra data Segment
   mov   %ax, %ss // Setup Stack Segment
 
-  pushl $0x07 // Light gray
-  pushl $12 // y
-  pushl $0 // x
-  pushl $text
-  calll print_vga_32
-  add   $16, %esp
+  mov   $0, %ecx
+  mov   $12, %edx
+  calll vga_set_xy
+  mov   $text, %ecx
+  calll puts_vga
 
 end:
   jmp   end

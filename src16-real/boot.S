@@ -10,14 +10,8 @@ _start:
   mov   $0x9C00, %sp // Setup Stack Pointer
 
   call  enable_line_20
-
   call  load_stage1
 
-  mov   $text, %cx
-  calll print_bios_16
+  calll print_test
 
-  jmp   to_protected
-
-  .section .rodata
-text:
-  .asciz "Hello world! (from 16 bits C, BIOS)\r\n\n"
+  jmp .

@@ -1,4 +1,4 @@
-#include "print_16.h"
+#include "puts.h"
 
 extern char stage1_start, stage1_end;
 
@@ -14,5 +14,5 @@ void load_stage1()
          "d" (0x0 /* Head number */ << 8 | 0x0 /* Drive identifier */)
       );
   if (0xFF00 & ret)
-    print_bios_16("Error loading stage1");
+    puts_bios("Error loading stage1\r\n");
 }

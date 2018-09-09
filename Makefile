@@ -1,15 +1,16 @@
 OBJCOPY?=objcopy
 ASFLAGS+=-g3
 CFLAGS+=-g3
-CFLAGS+=-fno-pic -fpack-struct
+CFLAGS+=-fno-pic -fpack-struct -fno-builtin
+CFLAGS+=-Wall -Wextra
 
 # Files to be put on the first sector of the floppy device
 stage0_16 := boot load_stage1 enable_line_20
 stage0_32 :=
 stage0_64 :=
 # Files to be put on the remaining sectors of the floppy device and loaded after
-stage1_16 := simple_gdt to_protected print_bios_16
-stage1_32 := reload_segments print_vga_32
+stage1_16 := putc_bios putc_vga puts puti print_test putc_serial
+stage1_32 :=
 stage1_64 :=
 
 fold_name_16 := src16-real
@@ -17,6 +18,8 @@ fold_name_32 := src32-protected
 fold_name_64 := src64-long
 
 ##########
+
+printing_src := $(notdir $(wildcard src-printing/*.c))
 
 all: hello64
 
@@ -45,6 +48,15 @@ $(fold_name_32)/%.o: CFLAGS+=-m32 -Os
 
 LDFLAGS+=-m elf_i386
 
+$(addprefix $(fold_name_16)/, $(printing_src)):
+	ln -s $(addprefix ../src-printing/, $(printing_src)) $(fold_name_16)/
+
+$(addprefix $(fold_name_32)/, $(printing_src)):
+	ln -s $(addprefix ../src-printing/, $(printing_src)) $(fold_name_32)/
+
+$(addprefix $(fold_name_64)/, $(printing_src)):
+	ln -s $(addprefix ../src-printing/, $(printing_src)) $(fold_name_64)/
+
 stage0.elf: $(stage0_OBJ)
 	$(LD) $(LDFLAGS) -r -o $@ $^
 
@@ -68,6 +80,9 @@ clean:
 	$(RM) stage0.bin stage1.bin stage0.elf stage1.elf
 	$(RM) $(stage0_OBJ) $(stage1_OBJ)
 	$(RM) test/test.o
+	$(RM) $(addprefix $(fold_name_16)/, $(printing_src))
+	$(RM) $(addprefix $(fold_name_32)/, $(printing_src))
+	$(RM) $(addprefix $(fold_name_64)/, $(printing_src))
 
 dump: hello64
 	hexdump -C hello64
