@@ -17,7 +17,7 @@ __attribute__((fastcall)) void vga_set_attributes(const char attributes)
   vga_attributes = attributes;
 }
 
-void putc_vga(const char c)
+__attribute__((fastcall)) void putc_vga(const char c)
 {
   if (c == '\n')
     ++vga_y;

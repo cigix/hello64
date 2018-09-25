@@ -13,5 +13,4 @@ _start:
   call  load_stage1
 
   calll print_test
-
   jmp .

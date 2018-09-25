@@ -23,3 +23,8 @@ __attribute__((fastcall)) void puti_vga(long n, char length)
 {
   return puti(n, length, putc_vga);
 }
+
+__attribute__((fastcall)) void puti_serial(long n, char length)
+{
+  return puti(n, length, putc_serial);
+}

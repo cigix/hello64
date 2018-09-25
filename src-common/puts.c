@@ -23,3 +23,8 @@ __attribute__((fastcall)) unsigned puts_vga(const char *str)
 {
   return puts(str, putc_vga);
 }
+
+__attribute__((fastcall)) unsigned puts_serial(const char *str)
+{
+  return puts(str, putc_serial);
+}
