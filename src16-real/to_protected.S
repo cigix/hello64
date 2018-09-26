@@ -9,9 +9,11 @@ to_protected:
   mov   $2, %bl
   int   $0x15
 
-  lgdt  gdtr
+  calll setup_idt
 
   cli
+  lgdt  gdtr
+  lidt  idtr
   mov   %cr0, %eax
   or    $0x1, %al
   mov   %eax, %cr0 // We are now in protected mode

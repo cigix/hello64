@@ -23,5 +23,5 @@ __attribute__((fastcall)) void putc_serial(const char c)
 {
   while (!(inb(LINE_STAT(COM1)) & (1 << 5)))
     continue;
-  outb(c, DATA(COM1));
+  outb(c, DATA_COM(COM1));
 }

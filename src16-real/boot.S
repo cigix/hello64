@@ -11,8 +11,5 @@ _start:
 
   call  enable_line_20
   call  load_stage1
-  calll serial_setup
 
-  calll print_vendor
-
-  jmp .
+  jmp   to_protected

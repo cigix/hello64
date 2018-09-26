@@ -49,7 +49,7 @@ SECTIONS
   }
 
   .data.stage0 : SUBALIGN(0) {
-    stage0.elf(.rodata* .data*)
+    stage0.elf(.rodata* .data* .bss* COMMON*)
   }
 
   .sig 0x7DFE :
@@ -63,7 +63,7 @@ SECTIONS
   }
 
   .data.stage1 : SUBALIGN(0) {
-    stage1.elf(.rodata* .data*)
+    stage1.elf(.rodata* .data* .bss* COMMON*)
     . = ALIGN(0x200);
     stage1_end = .;
   }

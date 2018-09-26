@@ -1,21 +1,24 @@
 OBJCOPY?=objcopy
 ASFLAGS+=-g3
 CFLAGS+=-g3
-CFLAGS+=-fno-pic -fpack-struct -fno-builtin
+CFLAGS+=-fno-pic -fpack-struct -fno-builtin -mgeneral-regs-only
 CFLAGS+=-Wall -Wextra
 
 # Files to be put on the first sector of the floppy device
-stage0_16 := boot load_stage1 enable_line_20 cpuid
+stage0_16 := boot load_stage1 enable_line_20
 stage0_32 :=
 stage0_64 :=
 # Files to be put on the remaining sectors of the floppy device and loaded after
-stage1_16 := putc_bios putc_vga puts puti print_test putc_serial io
-stage1_32 :=
+stage1_16 := setup_idt simple_gdt to_protected
+stage1_32 := idt reload_segments
+stage1_32 += putc_bios putc_serial putc_vga puti puts
 stage1_64 :=
 
 fold_name_16 := src16-real
 fold_name_32 := src32-protected
 fold_name_64 := src64-long
+
+$(fold_name_32)/idt.o: CFLAGS+=-mno-red-zone
 
 ##########
 

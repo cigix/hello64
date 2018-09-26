@@ -1,11 +1,10 @@
 #include <stdint.h>
 
 #include "descriptor.h"
-#include "print_16.h"
 #include "ram.h"
 
 // Linker script variables
-extern char data_start, data_end;
+extern char stage1_start, stage1_end;
 
 uint64_t gdt[4] = {
   // Null segment
@@ -22,13 +21,11 @@ uint64_t gdt[4] = {
   0
 };
 
-struct gdt_register
+struct
 {
   uint16_t size;
   uint32_t offset;
-};
-
-struct gdt_register gdtr = { sizeof (gdt) - 1, (uint32_t)&gdt };
+} gdtr = { sizeof (gdt) - 1, (uint32_t)&gdt };
 
 // 0x534D4150, or "SMAP"
 #define SMAP (('S' << 24) | ('M' << 16) | ('A' << 8) | 'P')
@@ -41,7 +38,7 @@ void find_extra_data()
   uint32_t signature, size;
 
 
-  uint64_t data_size = &data_end - &data_start;
+  uint64_t data_size = &stage1_end - &stage1_start;
 
   do
   {

@@ -10,16 +10,17 @@ reload_segments:
   mov   %ax, %fs // Setup Extra extra data Segment
   mov   %ax, %gs // Setup Extra extra extra data Segment
   mov   %ax, %ss // Setup Stack Segment
+  sti
 
-  mov   $0, %ecx
-  mov   $12, %edx
-  calll vga_set_xy
+  call  serial_setup
+
   mov   $text, %ecx
-  calll puts_vga
+  call  puts_serial
 
-end:
-  jmp   end
+  int   $0
+
+  jmp .
 
   .section .rodata
 text:
-  .asciz "Hello world! (from 32 bits C, VGA)"
+  .asciz "Hello world! (from 32 bits C, serial)\n"
