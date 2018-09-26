@@ -5,7 +5,7 @@ CFLAGS+=-fno-pic -fpack-struct -fno-builtin
 CFLAGS+=-Wall -Wextra
 
 # Files to be put on the first sector of the floppy device
-stage0_16 := boot load_stage1 enable_line_20
+stage0_16 := boot load_stage1 enable_line_20 cpuid
 stage0_32 :=
 stage0_64 :=
 # Files to be put on the remaining sectors of the floppy device and loaded after
