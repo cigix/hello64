@@ -10,7 +10,7 @@ stage0_32 :=
 stage0_64 :=
 # Files to be put on the remaining sectors of the floppy device and loaded after
 stage1_16 := setup_idt simple_gdt to_protected
-stage1_32 := idt reload_segments
+stage1_32 := page_fault idt reload_segments setup_paging
 stage1_32 += putc_bios putc_serial putc_vga puti puts
 stage1_64 :=
 
