@@ -7,7 +7,7 @@ _start:
   mov   %ax, %ds // Setup Data Segment
   mov   %ax, %es // Setup Extra data Segment
   mov   %ax, %ss // Setup Stack Segment
-  mov   $0x9C00, %sp // Setup Stack Pointer
+  mov   $0xF000, %sp // Setup Stack Pointer
 
   call  enable_line_20
   calll load_stage1
