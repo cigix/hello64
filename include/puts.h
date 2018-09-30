@@ -1,8 +1,14 @@
 #ifndef PUTS_H
 #define PUTS_H
 
-unsigned puts_bios(const char *str) __attribute__((fastcall));
-unsigned puts_vga(const char *str) __attribute__((fastcall));
-unsigned puts_serial(const char *str) __attribute__((fastcall));
+#include "putc.h"
+
+static inline unsigned puts_generic(const char *str, const putc_function putc)
+{
+  unsigned count = 0;
+  while (str[count])
+    putc(str[count++]);
+  return count;
+}
 
 #endif /* !PUTS_H */

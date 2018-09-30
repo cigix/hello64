@@ -12,15 +12,13 @@ reload_segments:
   mov   %ax, %ss // Setup Stack Segment
   sti
 
-  call  serial_setup
+  calll serial_setup
 
   mov   $text, %ecx
-  call  puts_serial
-
-  int   $0
+  calll puts_serial
 
   jmp .
 
   .section .rodata
 text:
-  .asciz "Hello world! (from 32 bits C, serial)\n"
+  .asciz "Reached protected mode\n"

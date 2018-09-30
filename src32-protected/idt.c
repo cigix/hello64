@@ -1,9 +1,7 @@
 #include <stdint.h>
 
 #include "interrupts.h"
-#include "putc.h"
-#include "puti.h"
-#include "puts.h"
+#include "putc_serial.h"
 
 #define E(num, name)                                                      \
 __attribute__((interrupt,weak))                                           \

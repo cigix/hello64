@@ -10,6 +10,13 @@ _start:
   mov   $0x9C00, %sp // Setup Stack Pointer
 
   call  enable_line_20
-  call  load_stage1
+  calll load_stage1
+
+  mov   $text, %cx
+  calll puts_bios
 
   jmp   to_protected
+
+  .section .rodata
+text:
+  .asciz "Jumping into protected mode...\r\n"

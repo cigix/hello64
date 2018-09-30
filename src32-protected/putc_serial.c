@@ -1,6 +1,7 @@
-#include "putc.h"
-#include "io.h"
+#include "putc_serial.h"
 
+#include "puti.h"
+#include "puts.h"
 
 void serial_setup()
 {
@@ -19,9 +20,12 @@ void serial_setup()
        INT_FIFO_CTL(COM1));
 }
 
-__attribute__((fastcall)) void putc_serial(const char c)
+__attribute__((fastcall)) void puti_serial(long n, char length)
 {
-  while (!(inb(LINE_STAT(COM1)) & (1 << 5)))
-    continue;
-  outb(c, DATA_COM(COM1));
+  return puti_generic(n, length, putc_serial);
+}
+
+__attribute__((fastcall)) unsigned puts_serial(const char *str)
+{
+  return puts_generic(str, putc_serial);
 }

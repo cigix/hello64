@@ -1,4 +1,4 @@
-#include "puts.h"
+#include "putc_bios.h"
 
 extern char stage1_start, stage1_end;
 
@@ -15,4 +15,6 @@ void load_stage1()
       );
   if (0xFF00 & ret)
     puts_bios("Error loading stage1\r\n");
+  else
+    puts_bios("Loaded stage1\r\n");
 }
