@@ -49,9 +49,10 @@
 #define IRQ_START (0x20)
 #define IDT_SIZE (IRQ_START + 16)
 
-extern uint64_t idt[IDT_SIZE];
+extern uint64_t idt32[IDT_SIZE];
+extern uint64_t idt64[IDT_SIZE * 2];
 
-struct interrupt_frame
+struct interrupt_frame_32
 {
     uint32_t ip;
     uint32_t cs;
@@ -60,12 +61,32 @@ struct interrupt_frame
     uint32_t ss;
 };
 
-#define E(num, name) \
-void handler ## num (struct interrupt_frame *frame, uint32_t error_code) \
-  __attribute((interrupt,weak));
-#define X(num, name) \
-void handler ## num (struct interrupt_frame *frame) \
+struct interrupt_frame_64
+{
+    uint64_t ip;
+    uint64_t cs;
+    uint64_t flags;
+    uint64_t sp;
+    uint64_t ss;
+};
+
+#ifdef __x86_64
+# define E(num, name)                                         \
+void handler ## num ## _64(struct interrupt_frame_64 *frame,  \
+                           uint64_t error_code)               \
   __attribute__((interrupt,weak));
+# define X(num, name)                                         \
+void handler ## num ## _64(struct interrupt_frame_64 *frame)  \
+  __attribute__((interrupt,weak));
+#else
+# define E(num, name)                                         \
+void handler ## num ## _32(struct interrupt_frame_32 *frame,  \
+                           uint32_t error_code)               \
+  __attribute__((interrupt,weak));
+# define X(num, name)                                         \
+void handler ## num ## _32(struct interrupt_frame_32 *frame)  \
+  __attribute__((interrupt,weak));
+#endif /* __x86_64 */
 #define I X
 INTERRUPT_LIST_EIX
 #undef E

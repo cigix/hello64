@@ -2,10 +2,10 @@
 #include "interrupts.h"
 #include "descriptor.h"
 
-void setup_idt()
+void setup_idt32()
 {
 #define X(num, name) \
-  idt[num] = OFFSET_ADDR((uint32_t)handler ## num) | \
+  idt32[num] = OFFSET_ADDR((uint32_t)handler ## num ## _32) | \
     SELECTOR_ADDR(SEGMENT_SELECTOR(1, SEGMENT_GDT, 0)) | \
     TYPE(GATE(TRAP_32) | PRIVILEGE(0));
 #define E X

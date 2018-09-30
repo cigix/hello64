@@ -9,14 +9,14 @@ to_protected:
   mov   $2, %bl
   int   $0x15
 
-  calll setup_idt
+  calll setup_idt32
 
   cli
-  lgdt  gdtr
-  lidt  idtr
+  lgdt  gdtr32
+  lidt  idtr32
   mov   %cr0, %eax
   or    $0x1, %al
   mov   %eax, %cr0 // We are now in protected mode
 
   // Reload the code segment to segment index 1, from GDT, with privilege 0
-  ljmp  $SEGMENT_SELECTOR(1, SEGMENT_GDT, 0), $reload_segments
+  ljmp  $SEGMENT_SELECTOR(1, SEGMENT_GDT, 0), $reload_segments_32

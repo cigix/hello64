@@ -6,7 +6,7 @@
 // Linker script variables
 extern char stage1_start, stage1_end;
 
-uint64_t gdt[4] = {
+uint64_t gdt32[3] = {
   // Null segment
   0,
   // Code segment : where we are currently loaded
@@ -16,9 +16,7 @@ uint64_t gdt[4] = {
   // Data segment : where we are currently loaded
   BASE_ADDR(0LL) | LIMIT_ADDR(0xFFFFFFFFLL) |
     ACCESS(PRIVILEGE(0LL) | DATA_RW | EXPAND_UP | SYSTEM) |
-    FLAGS(GRAIN_4K | SIZE_32),
-  // Extra data segment : to be determined
-  0
+    FLAGS(GRAIN_4K | SIZE_32)
 };
 
 struct

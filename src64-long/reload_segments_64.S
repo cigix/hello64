@@ -1,8 +1,8 @@
 #include "descriptor.h"
-  .code32
+  .code64
   .section .text
-  .global reload_segments
-reload_segments:
+  .global reload_segments_64
+reload_segments_64:
   // Point all other segments to segment index 2, from GDT, with privilege 0
   mov   $SEGMENT_SELECTOR(2, SEGMENT_GDT, 0), %ax
   mov   %ax, %ds // Setup Data Segment
@@ -12,13 +12,6 @@ reload_segments:
   mov   %ax, %ss // Setup Stack Segment
   sti
 
-  calll serial_setup
-
-  mov   $text, %ecx
-  calll puts_serial
-
-  jmp .
-
-  .section .rodata
-text:
-  .asciz "Reached protected mode\r\n"
+  mov   $puts_serial, %ecx
+  call  win
+  hlt

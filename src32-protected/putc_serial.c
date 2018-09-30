@@ -20,12 +20,12 @@ void serial_setup()
        INT_FIFO_CTL(COM1));
 }
 
-__attribute__((fastcall)) void puti_serial(long n, char length)
+FASTCALL void puti_serial(long n, char length)
 {
   return puti_generic(n, length, putc_serial);
 }
 
-__attribute__((fastcall)) unsigned puts_serial(const char *str)
+FASTCALL unsigned puts_serial(const char *str)
 {
   return puts_generic(str, putc_serial);
 }

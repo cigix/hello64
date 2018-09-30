@@ -1,6 +1,7 @@
 #ifndef PUTC_SERIAL_H
 #define PUTC_SERIAL_H
 
+#include "fastcall.h"
 #include "io.h"
 
 static inline void putc_serial(const char c)
@@ -12,7 +13,7 @@ static inline void putc_serial(const char c)
 
 void serial_setup();
 
-unsigned puts_serial(const char *str) __attribute__((fastcall));
-void puti_serial(long n, char length) __attribute__((fastcall));
+unsigned puts_serial(const char *str) FASTCALL;
+void puti_serial(long n, char length) FASTCALL;
 
 #endif /* !PUTC_SERIAL_H */

@@ -1,4 +1,3 @@
-#include "descriptor.h"
   .code16
   .section .text.stage0_start
   .global _start

@@ -1,5 +1,7 @@
-OUTPUT_FORMAT("elf32-i386");
+OUTPUT_FORMAT("elf64-x86-64");
 ENTRY(_start);
+INPUT(stage0.elf stage1.elf stage2.elf)
+OUTPUT(hello64.elf)
 
 SECTIONS
 {
@@ -68,11 +70,15 @@ SECTIONS
     stage1_end = .;
   } =0
 
-  .stage2 : SUBALIGN(0) {
+  .stage2 1M : AT(stage1_end) SUBALIGN(0) {
     stage2_start = .;
     *(*)
+    . = ALIGN(0x200);
     stage2_end = .;
   } =0
 
-  ram_start = ALIGN(0x1000);
+  stack_start = ALIGN(2M);
+  . += 2M;
+  stack_end = .;
+  ram_start = .;
 }

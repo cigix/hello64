@@ -10,17 +10,16 @@
 #define LIMIT_16_19(addr) (((addr) & 0xF) << 48)
 #define LIMIT_ADDR(addr) (LIMIT_0_15(addr) | LIMIT_16_19(addr >> 16))
 
-#define ACCESS(byte) ((((byte) & 0xFE) | 0x80LL) << 40)
+#define ACCESS(byte) ((((byte) & 0xFE) | 0x90LL) << 40)
 #define FLAGS(flags) (((flags) & 0xDLL) << 52)
 
 // Access:
 // |      0      |       1       |          2           |
 // | Accessed(0) | Read/Writable | Direction/Conforming |
-// |     3      |   4    |5---------6|     7      |
-// | Executable | System | Privilege | Present(1) |
+// |     3      |     4     |5---------6|     7      |
+// | Executable | System(1) | Privilege | Present(1) |
 
 #define PRIVILEGE(priv) ((priv) << 5)
-#define SYSTEM (1 << 4)
 #define DATA (0)
 #define EXECUTABLE (1 << 3)
 #define EXPAND_UP (0)
@@ -36,18 +35,21 @@
 #define DATA_RW (DATA | WRITE_DATA)
 
 // Flags:
-// |     0     |      1      |  2   |      3      |
-// | Available | Reserved(0) | Size | Granularity |
+// |     0     |  1   |  2   |      3      |
+// | Available | Long | Size | Granularity |
 
 #define GRAIN_1B (0)
 #define GRAIN_4K (1 << 3)
 #define SIZE_16 (0)
 #define SIZE_32 (1 << 2)
+#define LONG (1 << 1) // For x86_64 GDT
 #define AVAIL_1 (1)
 
 // Interrupt Descriptor:
 // |0----8-----15|16----24-----31|32---------39|40--47|48----56----63|
 // | Offset 0:15 | Selector 0:15 | Reserved(0) | Type | Offset 16:31 |
+// |64---72--80--88---95|96-104-112-120--128|
+// | Offset 32:63 (x64) | Reserved(0) (x64) |
 
 #define OFFSET_0_15(addr) ((addr) & 0xFFFF)
 #define OFFSET_16_31(addr) (((addr) & 0xFFFFLL) << 48)
