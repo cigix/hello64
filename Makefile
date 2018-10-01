@@ -5,13 +5,19 @@ CFLAGS+=-fno-pic -fpack-struct -fno-builtin -mgeneral-regs-only
 CFLAGS+=-Wall -Wextra
 
 # Files to be put on the first sector of the floppy device
-stage0_16 := boot load_stage1 enable_line_20 putc_bios
+stage0_16 := boot load_stage1 putc_bios read_floppy
 stage0_32 :=
 stage0_64 :=
-# Files to be put on the remaining sectors of the floppy device and loaded after
-stage1_16 := setup_idt simple_gdt to_protected
-stage1_32 := page_fault idt putc_serial reload_segments setup_paging
+# Files to be put on the remaining sectors of the floppy device
+# They will be loaded at 0x7E00, right after the first stage
+stage1_16 := enable_line_20 load_stage2 setup_idt simple_gdt to_protected unreal
+stage1_32 := idt putc_serial reload_segments
 stage1_64 :=
+# Files to be put on the remaining sectors of the floppy device
+# They will be loaded at 0x100000, in the upper memory
+stage2_16 :=
+stage2_32 :=
+stage2_64 :=
 
 fold_name_16 := src16-real
 fold_name_32 := src32-protected
@@ -79,9 +85,10 @@ dump: hello64
 	hexdump -C hello64
 
 S?=16
+m?=i386
 
 open_elf: hello64.elf
-	objdump -d -Maddr$S,data$S,$M $^
+	objdump -d -m $m -Maddr$S,data$S,$M $D $^
 
 open_bin: hello64
 	objdump -D -b binary -m i386 -Maddr$S,data$S,$M $^

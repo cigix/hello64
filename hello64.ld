@@ -66,11 +66,13 @@ SECTIONS
     stage1.elf(.rodata* .data* .bss* COMMON*)
     . = ALIGN(0x200);
     stage1_end = .;
-  }
+  } =0
 
   .stage2 : SUBALIGN(0) {
     stage2_start = .;
     *(*)
     stage2_end = .;
-  }
+  } =0
+
+  ram_start = ALIGN(0x1000);
 }

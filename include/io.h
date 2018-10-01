@@ -1,9 +1,11 @@
 #ifndef IO_H
 #define IO_H
 
-static inline char inb(short port)
+#include <stdint.h>
+
+static inline uint8_t inb(uint16_t port)
 {
-  char value;
+  uint8_t value;
   asm volatile ("in %1, %0" : "=a" (value) : "Nd" (port));
   return value;
 }

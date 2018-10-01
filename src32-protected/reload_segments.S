@@ -21,4 +21,4 @@ reload_segments:
 
   .section .rodata
 text:
-  .asciz "Reached protected mode\n"
+  .asciz "Reached protected mode\r\n"

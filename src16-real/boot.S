@@ -9,8 +9,11 @@ _start:
   mov   %ax, %ss // Setup Stack Segment
   mov   $0xF000, %sp // Setup Stack Pointer
 
-  call  enable_line_20
   calll load_stage1
+
+  call  enable_line_20
+
+  calll load_stage2
 
   mov   $text, %cx
   calll puts_bios
