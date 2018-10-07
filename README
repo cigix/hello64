@@ -1,0 +1,32 @@
+Structure of code:
+  stage0 (0x0 -- 0x200 floppy, 0x7C00 -- 0x7E00 RAM):
+    Contains the real mode backbone, helper code to read the floppy disk, the
+    stage 1 loader, and a print function for error reporting.
+
+  stage1 (0x200 -- any floppy, 0x7E00 -- any RAM):
+    Real mode: A20 enabler, stage 2 loader, unreal mode switcher, protected
+      mode's GDT, and setup to protected mode.
+    Protected mode: protected mode backbone, setups for long mode's paging and
+      IDT, long mode's GDT and IDT, and setup to long mode.
+    Long mode: long mode backbone, page fault handler, and serial print
+      function.
+
+  stage2 (after stage1 floppy, 0x100000 -- any RAM):
+    Contains the long mode `win` wrapper and caller, $EXTRA_OBJECT, and a weakly
+    linked win function in case $EXTRA_OBJECT didn't have one.
+
+Difficulties:
+  Only call to BIOS' `int 13h,ah=02h` was found reliable to read the floppy.
+  This meant that the floppy could only be read while in real mode, whereas I
+  wanted to load stage 2 above 1MiB, which is unaccessible from real mode. I
+  decided to switch back and forth from real to unreal mode, to read stage2 into
+  a buffer with the BIOS, and then copying it above 1MiB in unreal mode.
+
+  Despite my best efforts, I was not able to put the stack above 1MiB. The stack
+  size is therefore limited to about 500 KiB.
+
+Implementation:
+  My `printf` implementation is mostly a reinterpretation of
+  https://github.com/torvalds/linux/blob/master/arch/x86/boot/printf.c. It is as
+  close as possible to a POSIX compliant implementation, but lacks support for
+  some specifiers, like floating-point number printing.
