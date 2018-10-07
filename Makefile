@@ -8,22 +8,22 @@ stage0_32 :=
 stage0_64 :=
 # Files to be put on the remaining sectors of the floppy device
 # They will be loaded at 0x7E00, right after the first stage
-stage1_16 := enable_line_20 load_stage2 setup_idt32 to_protected unreal
-stage1_32 := reload_segments_32 setup_paging64 to_long
-stage1_32 += idt32 putc_serial simple_gdt32
-stage1_64 :=
+stage1_16 := enable_line_20 load_stage2 to_protected unreal
+stage1_32 := reload_segments_32 setup_idt64 setup_paging64 simple_gdt32 to_long
+stage1_64 := paging idt64 putc_serial reload_segments_64 simple_gdt64
 # Files to be put on the remaining sectors of the floppy device
 # They will be loaded at 0x100000, in the upper memory
 stage2_16 :=
 stage2_32 :=
-stage2_64 := paging reload_segments_64 idt64 simple_gdt64 weak_win
+stage2_64 := call_win weak_win
 
 fold_name_16 := src16-real
 fold_name_32 := src32-protected
 fold_name_64 := src64-long
 
-$(fold_name_32)/idt32.o: CFLAGS+=-mno-red-zone
-$(fold_name_64)/idt64.o: CFLAGS+=-mno-red-zone
+%/idt32.s %/idt64.s: CFLAGS+=-mno-red-zone
+%/setup_idt64.s: CFLAGS+=-Wno-pointer-to-int-cast
+%/setup_paging64.s: CFLAGS+=-Wno-int-to-pointer-cast
 
 ##########
 
@@ -54,7 +54,7 @@ stage2_OBJ += $(addprefix $(fold_name_32)/, $(addsuffix _32.o, $(stage2_32)))
 stage2_OBJ += $(addprefix $(fold_name_64)/, $(addsuffix .o, $(stage2_64)))
 
 CPPFLAGS+=-I include
-ASFLAGS+=--64
+ASFLAGS+=--64 -g
 $(fold_name_16)/%.s: CFLAGS+=-m16 -Os -g0 -fno-dwarf2-cfi-asm
 $(fold_name_32)/%.s: CFLAGS+=-m32 -Os -g0 -fno-dwarf2-cfi-asm
 $(fold_name_64)/%.s: CFLAGS+=-m64 -Os -g3
@@ -74,7 +74,7 @@ $(fold_name_64)/%.s: CFLAGS+=-m64 -Os -g3
 
 %_32.s: %.s
 	@echo -e "  FIX\t$@"
-	@echo -e "\t.code32" | cat - $^ > $@
+	@sed '1i\	.code32' $^ > $@
 
 %.o: %.s
 	@echo -e "  AS\t$@"
@@ -117,11 +117,10 @@ clean:
 dump: hello64
 	hexdump -C hello64
 
-S?=16
-m?=i386
+S?=64
 
 open_elf: hello64.elf
-	objdump -d -m $m -Maddr$S,data$S,$M $D $^
+	objdump -d -Maddr$S,data$S,$M $D $^
 
 open_bin: hello64
 	objdump -D -b binary -m i386 -Maddr$S,data$S,$M $^

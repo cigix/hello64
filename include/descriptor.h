@@ -11,7 +11,7 @@
 #define LIMIT_ADDR(addr) (LIMIT_0_15(addr) | LIMIT_16_19(addr >> 16))
 
 #define ACCESS(byte) ((((byte) & 0xFE) | 0x90LL) << 40)
-#define FLAGS(flags) (((flags) & 0xDLL) << 52)
+#define FLAGS(flags) (((flags) & 0xFLL) << 52)
 
 // Access:
 // |      0      |       1       |          2           |
@@ -71,6 +71,9 @@
 #define TASK_32 (0x5)
 // Privilege is identical to GDT
 #define STORAGE (1 << 4)
+// Long mode redefines these
+#define INTERRUPT_64 (INTERRUPT_32)
+#define TRAP_64 (TRAP_32)
 
 #define SEGMENT_SELECTOR(index, table, privilege) \
   ((index) << 3 | (table) << 2 | (privilege))

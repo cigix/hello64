@@ -70,24 +70,25 @@ struct interrupt_frame_64
     uint64_t ss;
 };
 
-#ifdef __x86_64
-# define E(num, name)                                         \
-void handler ## num ## _64(struct interrupt_frame_64 *frame,  \
-                           uint64_t error_code)               \
-  __attribute__((interrupt,weak));
-# define X(num, name)                                         \
-void handler ## num ## _64(struct interrupt_frame_64 *frame)  \
-  __attribute__((interrupt,weak));
-#else
 # define E(num, name)                                         \
 void handler ## num ## _32(struct interrupt_frame_32 *frame,  \
                            uint32_t error_code)               \
-  __attribute__((interrupt,weak));
+  __attribute__((weak));
 # define X(num, name)                                         \
 void handler ## num ## _32(struct interrupt_frame_32 *frame)  \
-  __attribute__((interrupt,weak));
-#endif /* __x86_64 */
+  __attribute__((weak));
 #define I X
+INTERRUPT_LIST_EIX
+#undef E
+#undef X
+
+# define E(num, name)                                         \
+void handler ## num ## _64(struct interrupt_frame_64 *frame,  \
+                           uint64_t error_code)               \
+  __attribute__((weak));
+# define X(num, name)                                         \
+void handler ## num ## _64(struct interrupt_frame_64 *frame)  \
+  __attribute__((weak));
 INTERRUPT_LIST_EIX
 #undef E
 #undef I

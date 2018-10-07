@@ -12,11 +12,12 @@ void handler ## num ## _64(struct interrupt_frame_64 *frame,  \
   puts_serial(#name);                                         \
   puts_serial(" (");                                          \
   puts_serial(#num);                                          \
-  puts_serial(") at 0x");                                     \
+  puts_serial(", 64) at 0x");                                 \
   puti_serial(frame->ip, 16);                                 \
   puts_serial(" with error code ");                           \
   puti_serial(error_code, 16);                                \
   putc_serial('\n');                                          \
+  for(;;);                                                    \
 }
 #define I(num, name)                                          \
 __attribute__((interrupt,weak))                               \
@@ -25,7 +26,7 @@ void handler ## num ## _64(struct interrupt_frame_64 *frame)  \
   (void)frame;                                                \
   puts_serial("Interrupt: ");                                 \
   puts_serial(#name);                                         \
-  putc_serial('\n');                                          \
+  puts_serial(" (64)\n");                                     \
 }
 #define X(num, name)                                          \
 __attribute__((interrupt,weak))                               \
@@ -35,9 +36,10 @@ void handler ## num ## _64(struct interrupt_frame_64 *frame)  \
   puts_serial(#name);                                         \
   puts_serial(" (");                                          \
   puts_serial(#num);                                          \
-  puts_serial(") at 0x");                                     \
+  puts_serial(", 64) at 0x");                                 \
   puti_serial(frame->ip, 16);                                 \
   putc_serial('\n');                                          \
+  for(;;);                                                    \
 }
 INTERRUPT_LIST_EIX
 #undef E

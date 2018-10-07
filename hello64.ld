@@ -77,8 +77,6 @@ SECTIONS
     stage2_end = .;
   } =0
 
-  stack_start = ALIGN(2M);
-  . += 2M;
-  stack_end = .;
+  . = ALIGN(2M);
   ram_start = .;
 }

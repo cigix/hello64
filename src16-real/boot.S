@@ -21,4 +21,4 @@ _start:
 
   .section .rodata
 text:
-  .asciz "Jumping into protected mode...\r\n"
+  .asciz "Jumping into protected, then long mode...\r\n"

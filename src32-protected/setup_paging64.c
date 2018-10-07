@@ -96,7 +96,7 @@ void create_mapping_2M(uint64_t virtual, uint64_t physical, unsigned flags)
 
 void setup_paging64()
 {
-  max_addr = &ram_start;
+  max_addr = (uintptr_t)&ram_start;
 
   // Put the first tables in lower memory
   asm ("mov %0, %%cr3" : : "r" (CR3_64(0, 0x1000)));
@@ -111,33 +111,29 @@ void setup_paging64()
     pdt[i] = 0;
     pt[i] = 0;
   }
-  // Map first MiB flat, read only, system
+  // Map first MiB flat, read only
   pml4t[0] = PML4E(0x2000);
   pdpt[0] = PDPE(0x3000);
   pdt[0] = PDE(0x4000);
   for (int i = 0; i < 256; ++i)
     pt[i] = PTE(4 KiB * i);
 
-  // Map stage 2 flat, read write, user
+  // Map stage 2 flat, read write
   for (uint64_t addr = (uintptr_t)&stage2_start; addr < (uintptr_t)&stage2_end; )
   {
     if (addr + 2 MiB <= (uintptr_t)&stage2_end)
     {
-      create_mapping_2M(addr, addr, WRITABLE | USER);
+      create_mapping_2M(addr, addr, WRITABLE);
       addr += 2 MiB;
     }
     else
     {
-      create_mapping_4K(addr, addr, WRITABLE | USER);
+      create_mapping_4K(addr, addr, WRITABLE);
       addr += 4 KiB;
     }
   }
 
-  // Map stack flat, read write, user
-  create_mapping_2M((uintptr_t)&stack_start, (uintptr_t)&stack_start,
-                    WRITABLE | USER);
-
-  // Map page tables flat, read only, user
+  // Map page tables flat, read only
   for (uint64_t addr = (uintptr_t)&ram_start; addr < max_addr; addr += 2 MiB)
     create_mapping_2M(addr, addr, 0);
 }

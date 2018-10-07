@@ -4,8 +4,12 @@
   .global to_long
 to_long:
   calll setup_paging64
+  calll setup_idt64
 
   cli
+
+  lgdt  gdtr64
+  lidt  idtr64
 
   mov   %cr4, %eax
   or    $(1 << 5), %eax
@@ -19,9 +23,6 @@ to_long:
   mov   %cr0, %eax
   or    $(1 << 31), %eax
   mov   %eax, %cr0 // We are now using paging
-
-  lgdt  gdtr64
-  lidt  idtr64
 
   // Reload the code segment to segment index 1, from GDT, with privilege 0
   ljmp  $SEGMENT_SELECTOR(1, SEGMENT_GDT, 0), $reload_segments_64

@@ -13,9 +13,9 @@ gdt64:
   // Code segment
   .quad BASE_ADDR(0) | LIMIT_ADDR(0xFFFFFFFF) | \
         ACCESS(PRIVILEGE(0) | EXEC_XR | NONCONFORMING) | \
-        FLAGS(GRAIN_4K | SIZE_32 | LONG)
+        FLAGS(GRAIN_4K | LONG)
   // Data segment
   .quad BASE_ADDR(0) | LIMIT_ADDR(0xFFFFFFFF) | \
         ACCESS(PRIVILEGE(0) | DATA_RW | EXPAND_UP) | \
-        FLAGS(GRAIN_4K | SIZE_32 | LONG)
+        FLAGS(GRAIN_4K | LONG)
 gdt64_end:
