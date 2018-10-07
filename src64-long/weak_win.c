@@ -1,5 +1,7 @@
+#include "win.h"
+
 __attribute__((weak))
-void win(int (*printf_ptr)(const char *fmt, ...))
+void win(printf_ptr printf)
 {
-        printf_ptr("Hello World (from weak win)\n");
+        printf("Hello World (from weak win)\n");
 }

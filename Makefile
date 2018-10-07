@@ -1,6 +1,6 @@
 OBJCOPY?=objcopy
 CFLAGS+=-fno-pic -fpack-struct -fno-builtin -mgeneral-regs-only
-CFLAGS+=-Wall -Wextra
+CFLAGS+=-fno-stack-protector -Wall -Wextra
 
 # Files to be put on the first sector of the floppy device
 stage0_16 := boot load_stage1 putc_bios read_floppy
@@ -105,7 +105,7 @@ hello64: hello64.elf
 	@$(OBJCOPY) -O binary $^ $@
 
 check:
-	$(MAKE) -f /dev/null test/test.o
+	$(MAKE) CFLAGS=-g3 -f /dev/null test/test.o
 	EXTRA_OBJECT=test/test.o $(MAKE) hello64
 
 clean:

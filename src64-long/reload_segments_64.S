@@ -14,8 +14,6 @@ reload_segments_64:
   mov   %rsp, %rbp
   sti
 
-  call  serial_setup
-
   call  call_win
 
   hlt
