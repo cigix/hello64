@@ -349,5 +349,5 @@ void call_win()
   printf("Successfully reached long mode\r\n");
   printf("Calling win(printf)...\r\n\n");
   win(printf);
-  printf("\r\nwin() exited, halting");
+  printf("\r\nwin() exited, halting\r\n");
 }
